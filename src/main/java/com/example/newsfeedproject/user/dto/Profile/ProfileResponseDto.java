@@ -1,5 +1,10 @@
-package com.example.newsfeedproject.user.dto;
+package com.example.newsfeedproject.user.dto.Profile;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProfileResponseDto {
     private final Long userId;
     private final String userName;
