@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -27,7 +28,17 @@ public class Post extends TimeBaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 게시글 내용
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 유저 (ManyToOne 관계)
+
+    public Post(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public Post() {
+
+    }
 }
