@@ -1,6 +1,6 @@
 package com.example.newsfeedproject.user.controller;
 
-import com.example.newsfeedproject.user.dto.ProfileResponseDto;
+import com.example.newsfeedproject.user.dto.Profile.ProfileResponseDto;
 import com.example.newsfeedproject.user.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
