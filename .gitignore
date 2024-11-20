@@ -22,6 +22,7 @@
 application-setting.properties
 # User-specific stuff
 # IntelliJ IDEA 관련 파일
+.idea/
 .idea/MOMO_Project.iml
 .idea/compiler.xml
 .idea/dataSources.xml
