@@ -3,7 +3,11 @@
   <component name="MaterialThemeProjectNewConfig">
     <option name="metadata">
       <MTProjectMetadataState>
+<<<<<<< HEAD
+        <option name="userId" value="-65b3db6e:193472604e8:-7ff2" />
+=======
         <option name="userId" value="-4e990b61:19347054d14:-7fb9" />
+>>>>>>> develop
       </MTProjectMetadataState>
     </option>
   </component>
