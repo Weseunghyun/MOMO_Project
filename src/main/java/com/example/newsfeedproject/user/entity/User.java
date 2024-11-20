@@ -13,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,14 +48,11 @@ public class User extends TimeBaseEntity {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>(); // 내가 받은 친구 요청
 
-
     public User() {}
-
     public User(String name, String email, String profileImageUrl, String password) {
         this.name = name;
         this.email = email;
         this.profileImageUrl = profileImageUrl;
         this.password = password;
-
     }
 }
