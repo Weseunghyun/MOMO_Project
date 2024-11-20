@@ -1,8 +1,10 @@
 package com.example.newsfeedproject.post.service;
 
+import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.post.dto.PostPageResponseDto;
 import com.example.newsfeedproject.post.dto.PostPageResponseDto.PageInfo;
 import com.example.newsfeedproject.post.dto.PostResponseDto;
+import com.example.newsfeedproject.post.dto.PostUpdateResponseDto;
 import com.example.newsfeedproject.post.dto.PostWithNameResponseDto;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.post.repository.PostRepository;
@@ -25,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //게시글을 생성하는 서비스 메서드
     public PostResponseDto createPost(HttpServletRequest request, String title, String content) {
@@ -74,5 +77,38 @@ public class PostService {
         );
 
         return new PostPageResponseDto(posts.getContent(), pageInfo);
+    }
+
+    public PostUpdateResponseDto updatePost(HttpServletRequest request, Long postId, String title,
+        String content, String password)
+    {
+        Long userId = (Long) request.getSession().getAttribute("userId");
+
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        Post post = postRepository.findById(postId).orElseThrow(null);
+        User postUser = post.getUser();
+
+        if (!userId.equals(postUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신의 게시물만 수정할 수 있습니다!");
+        }
+
+        if (!passwordEncoder.matches(password, postUser.getPassword())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        post.setTitle(title);
+        post.setContent(content);
+
+        Post updatedPost = postRepository.save(post);
+
+        return new PostUpdateResponseDto(
+            updatedPost.getId(),
+            updatedPost.getTitle(),
+            updatedPost.getContent(),
+            updatedPost.getModifiedAt()
+        );
     }
 }

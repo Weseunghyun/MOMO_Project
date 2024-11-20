@@ -22,9 +22,11 @@ public class Post extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 게시글 고유 식별자
 
+    @Setter
     @Column(nullable = false)
     private String title; // 게시글 제목
 
+    @Setter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 게시글 내용
 
