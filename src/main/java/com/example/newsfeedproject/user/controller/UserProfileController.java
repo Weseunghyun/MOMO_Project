@@ -34,7 +34,8 @@ public class UserProfileController {
                 request,
                 requestDto.getUserName(),
                 requestDto.getProfileImageUrl(),
-                requestDto.getPassword()
+                requestDto.getPassword(),
+                requestDto.getNewPassword()
         );
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);

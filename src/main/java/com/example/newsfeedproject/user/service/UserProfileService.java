@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.user.service;
 
 import com.example.newsfeedproject.common.config.PasswordEncoder;
+import com.example.newsfeedproject.common.util.UtilValidation;
 import com.example.newsfeedproject.user.dto.Profile.ProfileResponseDto;
 import com.example.newsfeedproject.user.dto.Profile.ProfileUpdateResponseDto;
 import com.example.newsfeedproject.user.entity.User;
@@ -38,9 +39,8 @@ public class UserProfileService {
      * 사용자 프로필 수정
      */
     
-    public ProfileUpdateResponseDto updateUserProfile(HttpServletRequest request, String userName, String profileImageUrl, String rawPassword) {
+    public ProfileUpdateResponseDto updateUserProfile(HttpServletRequest request, String userName, String profileImageUrl, String rawPassword, String newPassword) {
         HttpSession session = request.getSession(false); // 세션 o -> 현재 로그인된 사용자의 httpServletRequest를 가져옴
-        if (session != null) {}
 
         // 현재 로그인하고 있는 사용자의 정보를 가져옴
         Long currentUserId = (Long) session.getAttribute("userId");
@@ -52,9 +52,18 @@ public class UserProfileService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다.");
         }
 
+        if (passwordEncoder.matches(newPassword, updateUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "동일한 비밀번호는 사용할 수 없습니다.");
+        }
+
+        // 비밀번호 형식
+        if (!UtilValidation.isValidPasswordFormat(newPassword)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호는 최소 8자, 대소문자 포함한 영문, 숫자, 특수문자를 포함해야합니다.");
+        }
+
         updateUser.setName(userName);
         updateUser.setProfileImageUrl(profileImageUrl);
-        updateUser.setPassword(passwordEncoder.encode(rawPassword));
+        updateUser.setPassword(passwordEncoder.encode(newPassword));
 
         userRepository.save(updateUser);
 
@@ -65,4 +74,7 @@ public class UserProfileService {
                 updateUser.getModifiedAt()
         );
     }
+
+
+
 }
