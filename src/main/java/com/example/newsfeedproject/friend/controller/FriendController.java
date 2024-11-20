@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.friend.controller;
 
+import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
+import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendRequestDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendServiceDto;
@@ -18,6 +20,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +56,7 @@ public class FriendController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효성 검사 실패");
     }
 
-
+    // 친구 요청
     @GetMapping("/request")
     public ResponseEntity<RequestFriendResponseDto> requestFriend(@Validated @RequestBody RequestFriendRequestDto requestFriendRequestDto,
                                                                   BindingResult bindingResult, HttpServletRequest request) {
@@ -61,6 +66,14 @@ public class FriendController {
         HttpSession session = request.getSession(false);
         RequestFriendServiceDto serviceDto = new RequestFriendServiceDto(requestFriendRequestDto.getReceiverId(),(Long)session.getAttribute("userId"));
         return new ResponseEntity<>(friendService.RequestFriend(serviceDto), HttpStatus.OK);
+    }
+
+    // 친구 수락
+    @PostMapping("/request/{friendId}")
+    public ResponseEntity<AcceptFriendResponseDto> acceptFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        AcceptFriendServiceDto serviceDto = new AcceptFriendServiceDto((Long)session.getAttribute("userId"), friendId);
+        return new ResponseEntity<>(friendService.AcceptFriend(serviceDto), HttpStatus.OK);
     }
 
 }

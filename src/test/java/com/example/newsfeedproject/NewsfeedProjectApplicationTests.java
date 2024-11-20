@@ -1,5 +1,7 @@
 package com.example.newsfeedproject;
 
+import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
+import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendServiceDto;
 import com.example.newsfeedproject.friend.entity.Friend;
@@ -31,20 +33,34 @@ class NewsfeedProjectApplicationTests {
     @Test
     void RequestFriendTest()throws Exception {
         //given
-        String link = "asd";
         User requester = new User("송정학","asd@naver.com","asd","1234");
         User receiver = new User("송정학","asdf@naver.com","asd","1234");
         userRepository.save(requester);
         userRepository.save(receiver);
-        RequestFriendServiceDto dto = new RequestFriendServiceDto(requester.getId(),receiver.getId());
+        RequestFriendServiceDto dto = new RequestFriendServiceDto(receiver.getId(),requester.getId());
         //when
-        RequestFriendResponseDto ResponseDto = friendService.RequestFriend(dto);
+        RequestFriendResponseDto responseDto = friendService.RequestFriend(dto);
         Optional<Friend> friend = friendRepository.findById(1L);
         //then
-        assertThat(ResponseDto).isNotNull();
+        assertThat(responseDto).isNotNull();
         assertThat(friend.isPresent()).isTrue();
-
-
+    }
+    @Test
+    void AcceptFriendTest()throws Exception {
+        User requester = new User("송정학","asd@naver.com","asd","1234");
+        User receiver = new User("송정학","asdf@naver.com","asd","1234");
+        userRepository.save(requester);
+        userRepository.save(receiver);
+        RequestFriendServiceDto dto = new RequestFriendServiceDto(receiver.getId(),requester.getId());
+        //when
+        RequestFriendResponseDto requestFriendResponseDto = friendService.RequestFriend(dto);
+        Optional<Friend> friend = friendRepository.findById(1L);
+        //then
+        AcceptFriendServiceDto acceptFriendServiceDto = new AcceptFriendServiceDto(receiver.getId(),friend.get().getId());
+        AcceptFriendResponseDto acceptFriendResponseDto = friendService.AcceptFriend(acceptFriendServiceDto);
+        Optional<Friend> acceptFriend = friendRepository.findById(1L);
+        assertThat(acceptFriendResponseDto).isNotNull();
+        assertThat(acceptFriend.get().getStatus() == Friend.FriendStatus.ACCEPTED).isTrue();
     }
 
 }

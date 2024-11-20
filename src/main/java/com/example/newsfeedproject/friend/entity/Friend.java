@@ -51,6 +51,9 @@ public class Friend {
         this.requester = requester;
         this.receiver = receiver;
     }
+    public void accept() {
+        status = FriendStatus.ACCEPTED;
+    }
 
     // Enum 클래스 정의
     public enum FriendStatus {
