@@ -11,9 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "user")
 public class User extends TimeBaseEntity {
@@ -44,4 +47,12 @@ public class User extends TimeBaseEntity {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>(); // 내가 받은 친구 요청
+
+    public User() {}
+    public User(String name, String email, String profileImageUrl, String password) {
+        this.name = name;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+        this.password = password;
+    }
 }
