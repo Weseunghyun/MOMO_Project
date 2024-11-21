@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,windows,git,intellij,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,windows,git,intellij,java
-
+HELP.md
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false
@@ -21,6 +21,18 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 application-setting.properties
 # User-specific stuff
+# IntelliJ IDEA 관련 파일
+.idea/
+.idea/MOMO_Project.iml
+.idea/compiler.xml
+.idea/dataSources.xml
+.idea/jarRepositories.xml
+.idea/material_theme_project_new.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/modules/newsfeed-project.main.iml
+.idea/vcs.xml
+
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
@@ -58,7 +70,8 @@ application-setting.properties
 # .idea/modules
 # *.iml
 # *.ipr
-
+*.iml
+*.ipr
 # CMake
 cmake-build-*/
 
@@ -170,7 +183,7 @@ ehthumbs_vista.db
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
-
+bin/
 # Windows Installer files
 *.cab
 *.msi
@@ -185,7 +198,9 @@ $RECYCLE.BIN/
 .gradle
 **/build/
 !src/**/build/
-
+!**/src/main/**/out/
+!**/src/test/**/out/
+.settings
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -203,9 +218,17 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
 ### Gradle Patch ###
 # Java heap dump
 *.hprof
-
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+.vscode/
 # End of https://www.toptal.com/developers/gitignore/api/gradle,windows,git,intellij,java
