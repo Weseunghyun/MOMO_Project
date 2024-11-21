@@ -50,6 +50,7 @@ public class LoginFilter implements Filter {
             }
 
             // 로그인 성공 로직
+            log.info("로그인된 사용자 요청: {}", requestURI);
 
         }
 
