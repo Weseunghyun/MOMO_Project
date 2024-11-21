@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.friend.entity;
 
 import com.example.newsfeedproject.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -36,12 +37,12 @@ public class Friend {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime requestedAt; // 요청 일자
-
-    @ManyToOne
+    //
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester; // 친구 요청을 보낸 사용자
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver; // 친구 요청을 받은 사용자
 
