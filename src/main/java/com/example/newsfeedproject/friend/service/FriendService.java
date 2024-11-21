@@ -2,6 +2,8 @@ package com.example.newsfeedproject.friend.service;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendResponseDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.findpost.FindPostResponseDto;
 import com.example.newsfeedproject.friend.dto.findpost.FindPostServiceDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
@@ -80,7 +82,6 @@ public class FriendService {
                 );
         friendRepository.delete(requestFriend);
 
-        System.out.println(friendRepository.count());
         return new RejectFriendResponseDto(true);
     }
 
@@ -98,5 +99,15 @@ public class FriendService {
             posts.addAll(targetUser.getPosts());
         }
         return new FindPostResponseDto(posts);
+    }
+
+    public DeleteFriendResponseDto deleteFriend(DeleteFriendServiceDto dto) {
+        List<Friend> friends = friendRepository.findAllFriendRequests(dto.getUserId());
+        Friend targetFriend = friends.stream().filter(friend -> friend.getId().equals(dto.getFriendId())).findFirst()
+                .orElseThrow(()->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 친구를 찾을 수 없습니다.")
+                );
+        friendRepository.delete(targetFriend);
+        return new DeleteFriendResponseDto(true);
     }
 }
