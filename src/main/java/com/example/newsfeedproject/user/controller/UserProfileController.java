@@ -11,13 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+// API 경로 설정
 @RequestMapping("/api/users/profiles")
 @RequiredArgsConstructor
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
 
-    @GetMapping("/api/users/profiles/{userId}")
+    /**
+     *  사용자 ID로 프로필 조회
+     */
+    @GetMapping("{userId}")
     public ResponseEntity<ProfileResponseDto> findUserProfile(@PathVariable Long userId) {
 
         ProfileResponseDto responseDto = userProfileService.findUserProfile(userId);
@@ -25,7 +29,11 @@ public class UserProfileController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/api/user/profiles")
+    /**
+     * 사용자 프로필 수정
+     */
+    
+    @PutMapping()
     public ResponseEntity<ProfileUpdateResponseDto> updateUserProfile(
             HttpServletRequest request,
             @RequestBody ProfileUpdateRequestDto requestDto
@@ -34,7 +42,8 @@ public class UserProfileController {
                 request,
                 requestDto.getUserName(),
                 requestDto.getProfileImageUrl(),
-                requestDto.getPassword()
+                requestDto.getPassword(),
+                requestDto.getNewPassword()
         );
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);

@@ -22,9 +22,11 @@ public class Post extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 게시글 고유 식별자
 
+    @Setter
     @Column(nullable = false)
     private String title; // 게시글 제목
 
+    @Setter
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 게시글 내용
 
@@ -33,12 +35,13 @@ public class Post extends TimeBaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 유저 (ManyToOne 관계)
 
-    public Post(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
     public Post() {
 
+    }
+
+    public Post(String title, String content, User postUser) {
+        this.title = title;
+        this.content = content;
+        this.user = postUser;
     }
 }
