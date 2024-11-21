@@ -32,9 +32,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -67,9 +70,7 @@ public class FriendController {
     @PostMapping("/request")
     public ResponseEntity<RequestFriendResponseDto> requestFriend(@Validated @RequestBody RequestFriendRequestDto requestFriendRequestDto,
                                                                   BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         HttpSession session = request.getSession(false);
         RequestFriendServiceDto serviceDto = new RequestFriendServiceDto(requestFriendRequestDto.getReceiverId(),(Long)session.getAttribute("userId"));
         return new ResponseEntity<>(friendService.requestFriend(serviceDto), HttpStatus.OK);
@@ -85,18 +86,19 @@ public class FriendController {
     }
 
     // 친구 요청 거절
-    @DeleteMapping("/request/{friendId}")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity<RejectFriendResponseDto> rejectFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        RejectFriendServiceDto serviceDto = new RejectFriendServiceDto((Long)session.getAttribute("userId"), friendId);
+        RejectFriendServiceDto serviceDto = new RejectFriendServiceDto(friendId,(Long)session.getAttribute("userId"));
         return new ResponseEntity<>(friendService.rejectFriend(serviceDto), HttpStatus.OK);
     }
     // 친구 게시글 조회
     @GetMapping("/newsfeed")
-    public ResponseEntity<FindPostResponseDto> findPosts(HttpServletRequest request) {
+    public ResponseEntity<List<FindPostResponseDto>> findPosts(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "10") int size,HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        FindPostServiceDto serviceDto = new FindPostServiceDto((Long)session.getAttribute("userId"));
-        FindPostResponseDto responseDto = friendService.findPost(serviceDto);
+        FindPostServiceDto serviceDto = new FindPostServiceDto((Long)session.getAttribute("userId"),page,size);
+        List<FindPostResponseDto> responseDto = friendService.findPost(serviceDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     // 친구 삭제

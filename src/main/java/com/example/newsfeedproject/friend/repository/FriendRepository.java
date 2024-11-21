@@ -12,7 +12,8 @@ import java.util.Optional;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("select f from User u join u.receivedFriendRequests f where u.id = :id")
-    List<Friend> findAllFriendRequests(@Param("id") Long id);
+    List<Friend> findAllFriendReceivedRequest(@Param("id") Long id);
 
-
+    @Query("select f from User u join u.sentFriendRequests f where u.id = :id")
+    List<Friend> findAllFriendSentRequests(@Param("id") Long id);
 }

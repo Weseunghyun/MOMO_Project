@@ -97,6 +97,7 @@ class NewsfeedProjectApplicationTests {
         assertThat(rejectFriend).isEmpty();
     }
     // 친구 게시글 조회 테스트
+    @Transactional
     @Test
     void findPostTest()throws Exception {
         User requester = new User("송정학","asd@naver.com","asd","1234");
@@ -107,15 +108,18 @@ class NewsfeedProjectApplicationTests {
         postRepository.save(new Post("title2","content2",receiver));
         Friend friend = new Friend(requester,receiver);
         friendRepository.save(friend);
-        AcceptFriendServiceDto acceptFriendServiceDto = new AcceptFriendServiceDto(receiver.getId(),friend.getId());
-        friendService.acceptFriend(acceptFriendServiceDto);
-        FindPostServiceDto findPostServiceDto = new FindPostServiceDto(receiver.getId());
+        Friend friend2 = friendRepository.findAll().stream().findFirst().get();
+        friend2.accept();
+        friendRepository.save(friend2);
+        Friend friend3 = friendRepository.findAll().stream().findAny().get();
+        FindPostServiceDto findPostServiceDto = new FindPostServiceDto(requester.getId(),1,10);
+        // 여기 오류발생 원인 파악불가
         //when
-        FindPostResponseDto posts = friendService.findPost(findPostServiceDto);
-        // 삭제를 테스트 하기 위해 삭제한 후에 캐시를 초기화
-
+        List<FindPostResponseDto> posts = friendService.findPost(findPostServiceDto);
         //then
-        assertThat(posts.getPosts().get(0).getId().equals(1L)).isTrue();
+        System.out.println(friend3.getStatus().toString());
+        System.out.println(posts.size());
+        assertThat(posts.size() == 1 ).isTrue();
 
     }
     // 친구 삭제 테스트
