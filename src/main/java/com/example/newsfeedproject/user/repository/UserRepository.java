@@ -16,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     "User not found")
             );
     }
+
+    User findByEmail(String email);
+
 }
