@@ -2,6 +2,8 @@ package com.example.newsfeedproject;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostResponseDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostServiceDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendResponseDto;
@@ -9,6 +11,8 @@ import com.example.newsfeedproject.friend.dto.request.RequestFriendServiceDto;
 import com.example.newsfeedproject.friend.entity.Friend;
 import com.example.newsfeedproject.friend.repository.FriendRepository;
 import com.example.newsfeedproject.friend.service.FriendService;
+import com.example.newsfeedproject.post.entity.Post;
+import com.example.newsfeedproject.post.repository.PostRepository;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,10 +36,11 @@ class NewsfeedProjectApplicationTests {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private EntityManager entityManager;
+    private PostRepository postRepository;
+
     // friendservice 친구신청 테스트
     @Test
-    void RequestFriendTest()throws Exception {
+    void requestFriendTest()throws Exception {
         //given
         User requester = new User("송정학","asd@naver.com","asd","1234");
         User receiver = new User("송정학","asdf@naver.com","asd","1234");
@@ -42,7 +48,7 @@ class NewsfeedProjectApplicationTests {
         userRepository.save(receiver);
         RequestFriendServiceDto dto = new RequestFriendServiceDto(receiver.getId(),requester.getId());
         //when
-        RequestFriendResponseDto responseDto = friendService.RequestFriend(dto);
+        RequestFriendResponseDto responseDto = friendService.requestFriend(dto);
         Optional<Friend> friend = friendRepository.findById(1L);
         //then
         assertThat(responseDto).isNotNull();
@@ -50,18 +56,18 @@ class NewsfeedProjectApplicationTests {
     }
 
     @Test
-    void AcceptFriendTest()throws Exception {
+    void acceptFriendTest()throws Exception {
         //given
         User requester = new User("송정학","asd@naver.com","asd","1234");
         User receiver = new User("송정학","asdf@naver.com","asd","1234");
         userRepository.save(requester);
         userRepository.save(receiver);
         RequestFriendServiceDto requestFriendServiceDto = new RequestFriendServiceDto(receiver.getId(),requester.getId());
-        friendService.RequestFriend(requestFriendServiceDto);
+        friendService.requestFriend(requestFriendServiceDto);
         Optional<Friend> friend = friendRepository.findById(1L);
         AcceptFriendServiceDto acceptFriendServiceDto = new AcceptFriendServiceDto(receiver.getId(),friend.get().getId());
         //when
-        AcceptFriendResponseDto acceptFriendResponseDto = friendService.AcceptFriend(acceptFriendServiceDto);
+        AcceptFriendResponseDto acceptFriendResponseDto = friendService.acceptFriend(acceptFriendServiceDto);
         //then
         Optional<Friend> acceptFriend = friendRepository.findById(1L);
         assertThat(acceptFriendResponseDto).isNotNull();
@@ -69,7 +75,7 @@ class NewsfeedProjectApplicationTests {
     }
 
     @Test
-    void RejectFriendTest()throws Exception {
+    void rejectFriendTest()throws Exception {
         User requester = new User("송정학","asd@naver.com","asd","1234");
         User receiver = new User("송정학","asdf@naver.com","asd","1234");
         userRepository.save(requester);
@@ -80,7 +86,7 @@ class NewsfeedProjectApplicationTests {
         Optional<Friend> friendexist = friendRepository.findAll().stream().findFirst();
         RejectFriendServiceDto rejectFriendServiceDto = new RejectFriendServiceDto(friendexist.get().getId(), friendexist.get().getReceiver().getId());
         //when
-        RejectFriendResponseDto rejectFriendResponseDto = friendService.RejectFriend(rejectFriendServiceDto);
+        RejectFriendResponseDto rejectFriendResponseDto = friendService.rejectFriend(rejectFriendServiceDto);
         // 삭제를 테스트 하기 위해 삭제한 후에 캐시를 초기화
 
         //then
@@ -88,6 +94,28 @@ class NewsfeedProjectApplicationTests {
      
         assertThat(rejectFriendResponseDto).isNotNull();
         assertThat(rejectFriend).isEmpty();
+    }
+
+    @Test
+    void findPostTest()throws Exception {
+        User requester = new User("송정학","asd@naver.com","asd","1234");
+        User receiver = new User("송정학","asdf@naver.com","asd","1234");
+        userRepository.save(requester);
+        userRepository.save(receiver);
+        postRepository.save(new Post("title","content",requester));
+        postRepository.save(new Post("title2","content2",receiver));
+        Friend friend = new Friend(requester,receiver);
+        friendRepository.save(friend);
+        AcceptFriendServiceDto acceptFriendServiceDto = new AcceptFriendServiceDto(receiver.getId(),friend.getId());
+        friendService.acceptFriend(acceptFriendServiceDto);
+        FindPostServiceDto findPostServiceDto = new FindPostServiceDto(receiver.getId());
+        //when
+        FindPostResponseDto posts = friendService.findPost(findPostServiceDto);
+        // 삭제를 테스트 하기 위해 삭제한 후에 캐시를 초기화
+
+        //then
+        assertThat(posts.getPosts().get(0).getId().equals(1L)).isTrue();
+
     }
 
 }

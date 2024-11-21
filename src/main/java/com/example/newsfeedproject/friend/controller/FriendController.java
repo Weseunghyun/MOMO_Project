@@ -2,6 +2,8 @@ package com.example.newsfeedproject.friend.controller;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostResponseDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostServiceDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendRequestDto;
@@ -60,7 +62,7 @@ public class FriendController {
     }
 
     // 친구 요청
-    @GetMapping("/request")
+    @PostMapping("/request")
     public ResponseEntity<RequestFriendResponseDto> requestFriend(@Validated @RequestBody RequestFriendRequestDto requestFriendRequestDto,
                                                                   BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
@@ -68,7 +70,7 @@ public class FriendController {
         }
         HttpSession session = request.getSession(false);
         RequestFriendServiceDto serviceDto = new RequestFriendServiceDto(requestFriendRequestDto.getReceiverId(),(Long)session.getAttribute("userId"));
-        return new ResponseEntity<>(friendService.RequestFriend(serviceDto), HttpStatus.OK);
+        return new ResponseEntity<>(friendService.requestFriend(serviceDto), HttpStatus.OK);
     }
 
     // 친구 요청 수락
@@ -76,7 +78,7 @@ public class FriendController {
     public ResponseEntity<AcceptFriendResponseDto> acceptFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         AcceptFriendServiceDto serviceDto = new AcceptFriendServiceDto((Long)session.getAttribute("userId"), friendId);
-        return new ResponseEntity<>(friendService.AcceptFriend(serviceDto), HttpStatus.OK);
+        return new ResponseEntity<>(friendService.acceptFriend(serviceDto), HttpStatus.OK);
     }
 
     // 친구 요청 거절
@@ -84,7 +86,14 @@ public class FriendController {
     public ResponseEntity<RejectFriendResponseDto> rejectFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         RejectFriendServiceDto serviceDto = new RejectFriendServiceDto((Long)session.getAttribute("userId"), friendId);
-        return new ResponseEntity<>(friendService.RejectFriend(serviceDto), HttpStatus.OK);
+        return new ResponseEntity<>(friendService.rejectFriend(serviceDto), HttpStatus.OK);
+    }
+    @GetMapping("/newsfeed")
+    public ResponseEntity<FindPostResponseDto> findPosts(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        FindPostServiceDto serviceDto = new FindPostServiceDto((Long)session.getAttribute("userId"));
+        FindPostResponseDto responseDto = friendService.findPost(serviceDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
 }
