@@ -1,15 +1,17 @@
 package com.example.newsfeedproject.user.controller;
 
+import com.example.newsfeedproject.user.dto.Login.LoginRequestDto;
 import com.example.newsfeedproject.user.dto.Signup.SignUpRequestDto;
 import com.example.newsfeedproject.user.dto.Signup.SignUpResponseDto;
+import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.service.UserService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,7 +28,17 @@ public class UserController {
                         requestDto.getEmail(),
                         requestDto.getProfileImageUrl(),
                         requestDto.getPassword()
-                        );
+                );
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+        userService.loginUser(loginRequestDto, request);
+
+        return ResponseEntity.ok().body("정상적으로 로그인되었습니다.");
+
+    }
 }
+
+
