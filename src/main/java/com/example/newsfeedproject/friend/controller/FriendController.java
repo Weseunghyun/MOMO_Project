@@ -94,11 +94,11 @@ public class FriendController {
     }
     // 친구 게시글 조회
     @GetMapping("/newsfeed")
-    public ResponseEntity<List<FindPostResponseDto>> findPosts(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<FindPostResponseDto> findPosts(@RequestParam(defaultValue = "1") int page,
                                                          @RequestParam(defaultValue = "10") int size,HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         FindPostServiceDto serviceDto = new FindPostServiceDto((Long)session.getAttribute("userId"),page,size);
-        List<FindPostResponseDto> responseDto = friendService.findPost(serviceDto);
+        FindPostResponseDto responseDto = friendService.findPost(serviceDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     // 친구 삭제
