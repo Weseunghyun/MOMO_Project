@@ -2,6 +2,8 @@ package com.example.newsfeedproject.friend.controller;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
+import com.example.newsfeedproject.friend.dto.reject.RejectFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendRequestDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendServiceDto;
@@ -18,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
@@ -68,12 +71,20 @@ public class FriendController {
         return new ResponseEntity<>(friendService.RequestFriend(serviceDto), HttpStatus.OK);
     }
 
-    // 친구 수락
+    // 친구 요청 수락
     @PostMapping("/request/{friendId}")
     public ResponseEntity<AcceptFriendResponseDto> acceptFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         AcceptFriendServiceDto serviceDto = new AcceptFriendServiceDto((Long)session.getAttribute("userId"), friendId);
         return new ResponseEntity<>(friendService.AcceptFriend(serviceDto), HttpStatus.OK);
+    }
+
+    // 친구 요청 거절
+    @DeleteMapping("/request/{friendId}")
+    public ResponseEntity<RejectFriendResponseDto> rejectFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        RejectFriendServiceDto serviceDto = new RejectFriendServiceDto((Long)session.getAttribute("userId"), friendId);
+        return new ResponseEntity<>(friendService.RejectFriend(serviceDto), HttpStatus.OK);
     }
 
 }
