@@ -2,6 +2,8 @@ package com.example.newsfeedproject;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendRequestDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.findpost.FindPostResponseDto;
 import com.example.newsfeedproject.friend.dto.findpost.FindPostServiceDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
@@ -54,7 +56,7 @@ class NewsfeedProjectApplicationTests {
         assertThat(responseDto).isNotNull();
         assertThat(friend.isPresent()).isTrue();
     }
-
+    // 친구 수락 테스트
     @Test
     void acceptFriendTest()throws Exception {
         //given
@@ -73,7 +75,7 @@ class NewsfeedProjectApplicationTests {
         assertThat(acceptFriendResponseDto).isNotNull();
         assertThat(acceptFriend.get().getStatus() == Friend.FriendStatus.ACCEPTED).isTrue();
     }
-
+    // 친구 거절 테스트
     @Test
     void rejectFriendTest()throws Exception {
         User requester = new User("송정학","asd@naver.com","asd","1234");
@@ -87,7 +89,6 @@ class NewsfeedProjectApplicationTests {
         RejectFriendServiceDto rejectFriendServiceDto = new RejectFriendServiceDto(friendexist.get().getId(), friendexist.get().getReceiver().getId());
         //when
         RejectFriendResponseDto rejectFriendResponseDto = friendService.rejectFriend(rejectFriendServiceDto);
-        // 삭제를 테스트 하기 위해 삭제한 후에 캐시를 초기화
 
         //then
         Optional<Friend> rejectFriend = friendRepository.findById(friendexist.get().getId());
@@ -95,7 +96,7 @@ class NewsfeedProjectApplicationTests {
         assertThat(rejectFriendResponseDto).isNotNull();
         assertThat(rejectFriend).isEmpty();
     }
-
+    // 친구 게시글 조회 테스트
     @Test
     void findPostTest()throws Exception {
         User requester = new User("송정학","asd@naver.com","asd","1234");
@@ -117,5 +118,25 @@ class NewsfeedProjectApplicationTests {
         assertThat(posts.getPosts().get(0).getId().equals(1L)).isTrue();
 
     }
+    // 친구 삭제 테스트
+    @Test
+    void deleteFriend()throws Exception {
+        User requester = new User("송정학","asd@naver.com","asd","1234");
+        User receiver = new User("송정학","asdf@naver.com","asd","1234");
+        userRepository.save(requester);
+        userRepository.save(receiver);
+        Friend friend = new Friend(requester,receiver);
+        friendRepository.save(friend);
 
+        Optional<Friend> friendexist = friendRepository.findAll().stream().findFirst();
+        DeleteFriendServiceDto deleteFriendServiceDto = new DeleteFriendServiceDto(receiver.getId(),friendexist.get().getId());
+        //when
+        friendService.deleteFriend(deleteFriendServiceDto);
+
+        //then
+        Optional<Friend> deletedFriend = friendRepository.findAll().stream().findFirst();
+
+        assertThat(deletedFriend).isEmpty();
+
+    }
 }
