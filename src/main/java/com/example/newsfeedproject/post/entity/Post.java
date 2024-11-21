@@ -35,12 +35,13 @@ public class Post extends TimeBaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 유저 (ManyToOne 관계)
 
-    public Post(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
-
     public Post() {
 
+    }
+
+    public Post(String title, String content, User postUser) {
+        this.title = title;
+        this.content = content;
+        this.user = postUser;
     }
 }
