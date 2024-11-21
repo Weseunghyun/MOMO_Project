@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("select f from User u join u.receivedFriendRequests f where u.id = :id")
     List<Friend> findAllFriendRequests(@Param("id") Long id);
+
+
 }
