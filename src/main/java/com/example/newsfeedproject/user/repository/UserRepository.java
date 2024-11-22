@@ -10,11 +10,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // ID로 Post 조회 시 존재하지 않으면 NOT_FOUND 예외 발생
     default User findByIdOrElseThrow(long id) {
         return findById(id).
-                orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "User not found")
-                );
+            orElseThrow(() ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found")
+            );
     }
 
     User findByEmailAndAndIsDeleted(String email, Boolean isDeleted);

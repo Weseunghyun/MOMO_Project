@@ -17,30 +17,28 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class UserProfileService {
 
-    /**
-     * 사용자 프로필 조회
-     */
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //사용자 프로필 조회
     public ProfileResponseDto findUserProfile(Long userId) {
-        User findUser = userRepository.findById(userId).orElseThrow(null);
+        User findUser = userRepository.findByIdOrElseThrow(userId);
 
         return new ProfileResponseDto(
-                findUser.getId(),
-                findUser.getName(),
-                findUser.getEmail(),
-                findUser.getProfileImageUrl()
+            findUser.getId(),
+            findUser.getName(),
+            findUser.getEmail(),
+            findUser.getProfileImageUrl()
         );
     }
 
-    /**
-     * 사용자 프로필 수정
-     */
-    
+    //사용자 프로필 수정
     public ProfileUpdateResponseDto updateUserProfile(
-            HttpServletRequest request, String userName, String profileImageUrl, String rawPassword, String newPassword
+        HttpServletRequest request,
+        String userName,
+        String profileImageUrl,
+        String rawPassword,
+        String newPassword
     ) {
         // 세션 o -> 현재 로그인된 사용자의 httpServletRequest를 가져옴
         HttpSession session = request.getSession(false);
@@ -54,19 +52,19 @@ public class UserProfileService {
         // 인코딩된 비밀번호와 일치하는지 검증
         if (!passwordEncoder.matches(rawPassword, updateUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "비밀번호가 일치하지 않습니다.");
+                "비밀번호가 일치하지 않습니다.");
         }
 
         // 비밀번호 수정 시, 현재 비밀번호와 일치하지 않은 경우
         if (passwordEncoder.matches(newPassword, updateUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "동일한 비밀번호는 사용할 수 없습니다.");
+                "동일한 비밀번호는 사용할 수 없습니다.");
         }
 
         // 비밀번호 최소 8자 이상, 영문 + 숫자 + 특수문자 최소 1글자씩 포함할 경우
         if (!UtilValidation.isValidPasswordFormat(newPassword)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "비밀번호는 최소 8자, 대소문자 포함한 영문, 숫자, 특수문자를 포함해야합니다.");
+                "비밀번호는 최소 8자, 대소문자 포함한 영문, 숫자, 특수문자를 포함해야합니다.");
         }
 
         updateUser.setName(userName);
@@ -76,13 +74,10 @@ public class UserProfileService {
         userRepository.save(updateUser);
 
         return new ProfileUpdateResponseDto(
-                updateUser.getId(),
-                updateUser.getName(),
-                updateUser.getProfileImageUrl(),
-                updateUser.getModifiedAt()
+            updateUser.getId(),
+            updateUser.getName(),
+            updateUser.getProfileImageUrl(),
+            updateUser.getModifiedAt()
         );
     }
-
-
-
 }

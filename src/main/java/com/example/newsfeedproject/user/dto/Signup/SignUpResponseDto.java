@@ -1,7 +1,6 @@
 package com.example.newsfeedproject.user.dto.Signup;
 
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter
