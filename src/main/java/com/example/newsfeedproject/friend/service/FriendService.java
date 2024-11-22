@@ -75,7 +75,6 @@ public class FriendService {
         return new RequestFriendResponseDto(true);
     }
 
-    @Transactional
     public AcceptFriendResponseDto acceptFriend(AcceptFriendServiceDto dto) {
         User accepter = userRepository.findById(dto.getUserId())
                 .orElseThrow(()->
