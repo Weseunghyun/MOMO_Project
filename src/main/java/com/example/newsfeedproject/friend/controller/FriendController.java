@@ -2,6 +2,10 @@ package com.example.newsfeedproject.friend.controller;
 
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.accept.AcceptFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendRequestDto;
+import com.example.newsfeedproject.friend.dto.delete.DeleteFriendServiceDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostResponseDto;
+import com.example.newsfeedproject.friend.dto.findpost.FindPostServiceDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendResponseDto;
 import com.example.newsfeedproject.friend.dto.reject.RejectFriendServiceDto;
 import com.example.newsfeedproject.friend.dto.request.RequestFriendRequestDto;
@@ -28,9 +32,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -60,15 +67,13 @@ public class FriendController {
     }
 
     // 친구 요청
-    @GetMapping("/request")
+    @PostMapping("/request")
     public ResponseEntity<RequestFriendResponseDto> requestFriend(@Validated @RequestBody RequestFriendRequestDto requestFriendRequestDto,
                                                                   BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         HttpSession session = request.getSession(false);
         RequestFriendServiceDto serviceDto = new RequestFriendServiceDto(requestFriendRequestDto.getReceiverId(),(Long)session.getAttribute("userId"));
-        return new ResponseEntity<>(friendService.RequestFriend(serviceDto), HttpStatus.OK);
+        return new ResponseEntity<>(friendService.requestFriend(serviceDto), HttpStatus.OK);
     }
 
     // 친구 요청 수락
@@ -76,15 +81,34 @@ public class FriendController {
     public ResponseEntity<AcceptFriendResponseDto> acceptFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         AcceptFriendServiceDto serviceDto = new AcceptFriendServiceDto((Long)session.getAttribute("userId"), friendId);
-        return new ResponseEntity<>(friendService.AcceptFriend(serviceDto), HttpStatus.OK);
+        friendService.acceptFriend(serviceDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 친구 요청 거절
-    @DeleteMapping("/request/{friendId}")
+    @DeleteMapping("/{friendId}")
     public ResponseEntity<RejectFriendResponseDto> rejectFriend(@PathVariable("friendId") Long friendId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        RejectFriendServiceDto serviceDto = new RejectFriendServiceDto((Long)session.getAttribute("userId"), friendId);
-        return new ResponseEntity<>(friendService.RejectFriend(serviceDto), HttpStatus.OK);
+        RejectFriendServiceDto serviceDto = new RejectFriendServiceDto(friendId,(Long)session.getAttribute("userId"));
+        return new ResponseEntity<>(friendService.rejectFriend(serviceDto), HttpStatus.OK);
+    }
+    // 친구 게시글 조회
+    @GetMapping("/newsfeed")
+    public ResponseEntity<FindPostResponseDto> findPosts(@RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "10") int size,HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        FindPostServiceDto serviceDto = new FindPostServiceDto((Long)session.getAttribute("userId"),page,size);
+        FindPostResponseDto responseDto = friendService.findPost(serviceDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+    // 친구 삭제
+    @DeleteMapping("/remove")
+    public ResponseEntity<DeleteFriendRequestDto> deleteFriend(@Validated @RequestBody DeleteFriendRequestDto dto
+            , BindingResult bindingResult, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        DeleteFriendServiceDto serviceDto = new DeleteFriendServiceDto((Long)session.getAttribute("userId"), dto.getFriendId());
+        friendService.deleteFriend(serviceDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
