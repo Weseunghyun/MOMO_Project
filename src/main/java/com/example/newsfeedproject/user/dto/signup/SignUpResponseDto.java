@@ -1,4 +1,4 @@
-package com.example.newsfeedproject.user.dto.Signup;
+package com.example.newsfeedproject.user.dto.signup;
 
 import lombok.Getter;
 import java.time.LocalDateTime;

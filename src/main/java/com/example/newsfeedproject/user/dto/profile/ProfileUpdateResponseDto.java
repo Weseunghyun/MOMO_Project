@@ -1,4 +1,4 @@
-package com.example.newsfeedproject.user.dto.Profile;
+package com.example.newsfeedproject.user.dto.profile;
 
 import lombok.Getter;
 import lombok.Setter;

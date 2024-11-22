@@ -2,8 +2,8 @@ package com.example.newsfeedproject.user.service;
 
 import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.common.util.UtilValidation;
-import com.example.newsfeedproject.user.dto.Profile.ProfileResponseDto;
-import com.example.newsfeedproject.user.dto.Profile.ProfileUpdateResponseDto;
+import com.example.newsfeedproject.user.dto.profile.ProfileResponseDto;
+import com.example.newsfeedproject.user.dto.profile.ProfileUpdateResponseDto;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
