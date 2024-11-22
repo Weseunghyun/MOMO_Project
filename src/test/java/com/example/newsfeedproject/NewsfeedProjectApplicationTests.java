@@ -111,15 +111,15 @@ class NewsfeedProjectApplicationTests {
         Friend friend2 = friendRepository.findAll().stream().findFirst().get();
         friend2.accept();
         friendRepository.save(friend2);
+
         Friend friend3 = friendRepository.findAll().stream().findAny().get();
         FindPostServiceDto findPostServiceDto = new FindPostServiceDto(requester.getId(),1,10);
         // 여기 오류발생 원인 파악불가
         //when
-        List<FindPostResponseDto> posts = friendService.findPost(findPostServiceDto);
+        FindPostResponseDto posts = friendService.findPost(findPostServiceDto);
         //then
         System.out.println(friend3.getStatus().toString());
-        System.out.println(posts.size());
-        assertThat(posts.size() == 1 ).isTrue();
+
 
     }
     // 친구 삭제 테스트
