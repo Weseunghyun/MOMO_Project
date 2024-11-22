@@ -36,15 +36,15 @@ public class FriendController {
 
     private final FriendService friendService;
 
-    // 친구 요청
+    // 친구 요청을 하는 엔드포인트
     @PostMapping("/request")
     public ResponseEntity<RequestFriendResponseDto> requestFriend(
         @Validated @RequestBody RequestFriendRequestDto requestFriendRequestDto,
         HttpServletRequest request
     ) {
-
+        //세션을 통해 현재 유저 아이디를 가져옴
         HttpSession session = request.getSession(false);
-
+        // 서비스에서 필요한 정보는 요청을 받을 대상의 userId와 자기 자신의 userId
         RequestFriendServiceDto serviceDto = new RequestFriendServiceDto(
             requestFriendRequestDto.getReceiverId(),
             (Long) session.getAttribute("userId")
@@ -53,29 +53,30 @@ public class FriendController {
         return new ResponseEntity<>(friendService.requestFriend(serviceDto), HttpStatus.OK);
     }
 
-    // 친구 요청 수락
+    // 친구 요청 수락하는 엔드포인트
     @PostMapping("/request/{friendId}")
     public ResponseEntity<AcceptFriendResponseDto> acceptFriend(
         @PathVariable("friendId") Long friendId,
         HttpServletRequest request
     ) {
+        //세션을 통해 현재 유저 아이디를 가져옴
         HttpSession session = request.getSession(false);
-
+        // 서비스에서 필요한 정보는 자신의 userId와 friendId
         AcceptFriendServiceDto serviceDto = new AcceptFriendServiceDto(
             (Long) session.getAttribute("userId"), friendId);
 
-        friendService.acceptFriend(serviceDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(friendService.acceptFriend(serviceDto),HttpStatus.OK);
     }
 
-    // 친구 요청 거절
+    // 친구 요청 거절하는 엔드포인트
     @DeleteMapping("/{friendId}")
     public ResponseEntity<RejectFriendResponseDto> rejectFriend(
         @PathVariable("friendId") Long friendId,
         HttpServletRequest request
     ) {
+        // 세션을 통해 현재 유저의 아이디를 가져옴
         HttpSession session = request.getSession(false);
-
+        // 서비스에서 필요한 정보는 자신의 userId와 friendId
         RejectFriendServiceDto serviceDto = new RejectFriendServiceDto(
             friendId,
             (Long) session.getAttribute("userId")
@@ -84,15 +85,16 @@ public class FriendController {
         return new ResponseEntity<>(friendService.rejectFriend(serviceDto), HttpStatus.OK);
     }
 
-    // 친구 게시글 조회
+    // 페이징 처리된 친구 게시글 목록을 반환하는 엔드포인트. 디폴트 값 page=1, size=10
     @GetMapping("/newsfeed")
     public ResponseEntity<FindPostResponseDto> findPosts(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int size,
         HttpServletRequest request
     ) {
+        // 세션을 통해 현재 유저의 아이디를 가져옴
         HttpSession session = request.getSession(false);
-
+        // 서비스에서 필요한 정보는 자신의 userId와 page와 size
         FindPostServiceDto serviceDto = new FindPostServiceDto(
             (Long) session.getAttribute("userId"),
             page,
@@ -103,14 +105,15 @@ public class FriendController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 친구 삭제
+    // 친구 삭제하는 엔드포인트
     @DeleteMapping("/remove")
     public ResponseEntity<DeleteFriendRequestDto> deleteFriend(
         @Validated @RequestBody DeleteFriendRequestDto dto,
         HttpServletRequest request
     ) {
+        // 세션을 통해 현재 유저의 아이디를 가져옴
         HttpSession session = request.getSession(false);
-
+        // 서비스에서 필요한 정보는 자신의 userId와 friendId
         DeleteFriendServiceDto serviceDto = new DeleteFriendServiceDto(
             (Long) session.getAttribute("userId"),
             dto.getFriendId()
