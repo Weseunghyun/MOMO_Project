@@ -8,6 +8,7 @@ import com.example.newsfeedproject.post.dto.PostUpdateRequestDto;
 import com.example.newsfeedproject.post.dto.PostUpdateResponseDto;
 import com.example.newsfeedproject.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(
         HttpServletRequest request,
-        @RequestBody PostRequestDto requestDto
+        @Valid @RequestBody PostRequestDto requestDto
     ) {
 
         PostResponseDto responseDto = postService.createPost(
@@ -61,7 +62,7 @@ public class PostController {
     public ResponseEntity<PostUpdateResponseDto> updatePost(
         HttpServletRequest request,
         @PathVariable Long postId,
-        @RequestBody PostUpdateRequestDto requestDto
+        @Valid @RequestBody PostUpdateRequestDto requestDto
     ) {
         PostUpdateResponseDto responseDto = postService.updatePost(
             request,
@@ -79,7 +80,7 @@ public class PostController {
     public ResponseEntity<Void> deletePost(
         HttpServletRequest request,
         @PathVariable Long postId,
-        @RequestBody PostDeleteRequestDto requestDto
+        @Valid @RequestBody PostDeleteRequestDto requestDto
     ) {
         postService.deletePost(request, postId, requestDto.getPassword());
 
