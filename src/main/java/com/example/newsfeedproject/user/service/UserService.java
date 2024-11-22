@@ -2,8 +2,8 @@ package com.example.newsfeedproject.user.service;
 
 import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.common.util.UtilValidation;
-import com.example.newsfeedproject.user.dto.Login.LoginRequestDto;
-import com.example.newsfeedproject.user.dto.Signup.SignUpResponseDto;
+import com.example.newsfeedproject.user.dto.login.LoginRequestDto;
+import com.example.newsfeedproject.user.dto.signup.SignUpResponseDto;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,10 +66,15 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long id, String password, HttpServletRequest request) {
+
         User deleteUser = userRepository.findByIdOrElseThrow(id);
 
-        HttpSession session = request.getSession();
-        session.getAttribute("userId");
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (!userId.equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "다른 유저의 계정은 삭제할 수 없습니다.");
+        }
 
         if (passwordEncoder.matches(password, deleteUser.getPassword())) {
             deleteUser.setIsDeleted(true);

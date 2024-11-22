@@ -1,8 +1,8 @@
 package com.example.newsfeedproject.user.controller;
 
-import com.example.newsfeedproject.user.dto.Profile.ProfileResponseDto;
-import com.example.newsfeedproject.user.dto.Profile.ProfileUpdateRequestDto;
-import com.example.newsfeedproject.user.dto.Profile.ProfileUpdateResponseDto;
+import com.example.newsfeedproject.user.dto.profile.ProfileResponseDto;
+import com.example.newsfeedproject.user.dto.profile.ProfileUpdateRequestDto;
+import com.example.newsfeedproject.user.dto.profile.ProfileUpdateResponseDto;
 import com.example.newsfeedproject.user.service.UserProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,7 @@ public class UserProfileController {
 
     private final UserProfileService userProfileService;
 
-    /**
-     * 사용자 ID로 프로필 조회
-     */
+    //사용자 id로 프로필 정보 조회
     @GetMapping("{userId}")
     public ResponseEntity<ProfileResponseDto> findUserProfile(@PathVariable Long userId) {
 
@@ -28,9 +26,7 @@ public class UserProfileController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    /**
-     * 사용자 프로필 수정
-     */
+    //사용자 프로필 정보, 사용자 비밀번호 수정
     @PutMapping()
     public ResponseEntity<ProfileUpdateResponseDto> updateUserProfile(
         HttpServletRequest request,

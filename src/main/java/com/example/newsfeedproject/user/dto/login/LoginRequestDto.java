@@ -1,4 +1,4 @@
-package com.example.newsfeedproject.user.dto.Login;
+package com.example.newsfeedproject.user.dto.login;
 
 import lombok.Getter;
 
