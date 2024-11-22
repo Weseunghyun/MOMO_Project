@@ -47,7 +47,8 @@ public class UserProfileService {
         Long currentUserId = (Long) session.getAttribute("userId");
 
         // user 찾아옴
-        User updateUser = userRepository.findById(currentUserId).orElseThrow(null);
+        User updateUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
 
         // 인코딩된 비밀번호와 일치하는지 검증
         if (!passwordEncoder.matches(rawPassword, updateUser.getPassword())) {
