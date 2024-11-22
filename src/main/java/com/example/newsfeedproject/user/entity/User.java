@@ -59,4 +59,5 @@ public class User extends TimeBaseEntity {
         this.profileImageUrl = profileImageUrl;
         this.password = password;
     }
+
 }
