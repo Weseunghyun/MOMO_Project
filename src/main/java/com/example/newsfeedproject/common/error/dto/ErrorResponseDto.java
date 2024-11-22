@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ErrorResponseDto {
+
     private int errorCode;            // HTTP 상태 코드
     private String message;        // 에러 메시지
     private String path;           // 요청 URL
