@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class PostWithNameResponseDto {
+
     private final Long postId;
     private final String userName;
     private final String title;

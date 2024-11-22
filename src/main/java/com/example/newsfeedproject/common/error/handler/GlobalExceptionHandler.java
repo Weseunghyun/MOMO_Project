@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handlerMethodArgumentNotValidException(
         MethodArgumentNotValidException ex, HttpServletRequest request
-    ){
+    ) {
         FieldError fieldError = ex.getBindingResult().getFieldError();
         String errorMessage = fieldError != null ? fieldError.getDefaultMessage() : "유효성 검사 실패";
         return buildErrorResponse(
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponseDto> handlerMethodArgumentTypeMismatchException(
         MethodArgumentTypeMismatchException ex, HttpServletRequest request
-    ){
+    ) {
         return buildErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "유효하지 않은 데이터 형식입니다",
@@ -57,12 +57,15 @@ public class GlobalExceptionHandler {
 
     // 기본적인 예외 처리
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDto> handleGenericException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleGenericException(Exception ex,
+        HttpServletRequest request) {
         log.error("Unhandled Exception: {}", ex.getMessage());
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),"서버에서 문제가 발생했습니다.", request.getRequestURI());
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버에서 문제가 발생했습니다.",
+            request.getRequestURI());
     }
 
-    private ResponseEntity<ErrorResponseDto> buildErrorResponse(int errorCode, String message, String path) {
+    private ResponseEntity<ErrorResponseDto> buildErrorResponse(int errorCode, String message,
+        String path) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.builder()
             .errorCode(errorCode)
