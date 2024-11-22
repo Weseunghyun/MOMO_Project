@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class DeleteFriendResponseDto {
-    private boolean success;
+
+    private final boolean success;
+
     public DeleteFriendResponseDto(boolean success) {
         this.success = success;
     }

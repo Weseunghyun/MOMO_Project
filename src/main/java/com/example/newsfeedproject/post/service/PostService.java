@@ -81,8 +81,7 @@ public class PostService {
 
     //게시글 수정 로직
     public PostUpdateResponseDto updatePost(HttpServletRequest request, Long postId, String title,
-        String content, String password)
-    {
+        String content, String password) {
         //자신의 게시글을 수정하는 것이 맞는지, 비밀번호가 맞는지 검증하고 맞다면 해당 게시글 객체를 반환
         Post post = validateUserAccess(request, postId, password);
 
