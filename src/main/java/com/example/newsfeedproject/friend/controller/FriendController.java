@@ -97,7 +97,7 @@ public class FriendController {
         // 서비스에서 필요한 정보는 자신의 userId와 page와 size
         FindPostServiceDto serviceDto = new FindPostServiceDto(
             (Long) session.getAttribute("userId"),
-            page,
+            page -1,
             size
         );
 
