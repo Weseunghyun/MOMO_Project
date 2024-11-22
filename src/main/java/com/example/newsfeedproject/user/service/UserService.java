@@ -38,9 +38,9 @@ public class UserService {
     public void loginUser(LoginRequestDto loginRequestDto, HttpServletRequest request) {
         User user = userRepository.findByEmail(loginRequestDto.getEmail());
         if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "잘못된 비밀번호");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다!");
         } else if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword()))
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "유효하지 않은 사용자");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다!");
 
         HttpSession session = request.getSession();
         session.setAttribute("userId", user.getId());

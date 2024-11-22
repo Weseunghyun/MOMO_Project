@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class LoginFilter implements Filter {
         // 다양한 기능을 사용하기 위해 다운 캐스팅
         //해당 요청에 대한 정보를 얻어옴.
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
 
         log.info("로그인 필터 로직 실행");
@@ -46,11 +48,16 @@ public class LoginFilter implements Filter {
 
             // 로그인하지 않은 사용자인 경우
             if (session == null || session.getAttribute("userId") == null) {
-                throw new RuntimeException("로그인 해주세요.");
-            }
+                // JSON 형태의 응답 작성
+                httpResponse.setContentType("application/json");
+                httpResponse.setCharacterEncoding("UTF-8");
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
 
-            // 로그인 성공 로직
-            log.info("로그인된 사용자 요청: {}", requestURI);
+                // JSON 형태의 에러 메시지 작성
+                String jsonResponse = "{\"error\": \"로그인 후 할 수 있는 작업입니다.\"}";
+                httpResponse.getWriter().write(jsonResponse);
+                return; // 필터 종료
+            }
 
         }
 
