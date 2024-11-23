@@ -66,7 +66,10 @@ public class FriendService {
             }
         }
         // 예외사항을 모두 통과하면 새로운 friend 객체를 생성하고 저장한다. default status가 WAITING이 된다.
+
         Friend friend = new Friend(requester, receiver);
+        receiver.getReceivedFriendRequests().add(friend);
+        requester.getSentFriendRequests().add(friend);
         friendRepository.save(friend);
 
         return new RequestFriendResponseDto(true);
@@ -114,7 +117,8 @@ public class FriendService {
                 post.getTitle(),
                 post.getContent(),
                 post.getCreatedAt(),
-                post.getModifiedAt()
+                post.getModifiedAt(),
+                (long)post.getLikes().size()
         ));
 
         // 페이지 설정을 FindPostResponseDto에 저장
