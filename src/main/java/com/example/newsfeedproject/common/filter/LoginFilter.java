@@ -20,7 +20,7 @@ public class LoginFilter implements Filter {
 
     // 인증을 하지 않아도될 URL Path 배열
     // 회원가입, 로그인, 로그아웃, 로그인 안한 상태의 게시물 조회는 인증을 할 필요가 없다.
-    private static final String[] WHITE_LIST = {"/", "/api/posts", "/api/users/signup",
+    private static final String[] WHITE_LIST = {"/", "/api/posts", "/api/users/signup", "/api/posts/likesort",
         "/api/users/login",
         "/api/users/logout"};
 
