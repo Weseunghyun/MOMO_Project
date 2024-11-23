@@ -103,4 +103,19 @@ public class CommentService {
             updateComment.getModifiedAt()
         );
     }
+
+    public void deleteComment(Long commentId, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("userId");
+
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+
+        //댓글이 달린 게시글의 유저나 댓글을 직접 단 유저를 제외하고는 댓글을 삭제할 수 없도록 함
+        if (!userId.equals(findComment.getUserId()) && !userId.equals(findComment.getPostOwnerId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글의 주인이나 댓글의 주인만 삭제할 수 있습니다");
+        }
+
+        commentRepository.deleteById(commentId);
+    }
 }

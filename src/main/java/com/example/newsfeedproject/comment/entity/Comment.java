@@ -44,4 +44,12 @@ public class Comment extends TimeBaseEntity {
     public void update(String content) {
         this.content = content;
     }
+
+    public Long getUserId(){
+        return user.getId();
+    }
+
+    public Long getPostOwnerId(){
+        return post.getUser().getId();
+    }
 }
