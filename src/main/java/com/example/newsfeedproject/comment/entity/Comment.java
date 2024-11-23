@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,26 +21,27 @@ public class Comment extends TimeBaseEntity {
     private Long id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String comment;
+    private String content;
 
     @Setter
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 유저 (ManyToOne 관계)
-
-    public Comment(String comment, Long postId) {
-        super();
-    }
 
     public String getName() {
         return user.getName();
     }
 
-    public void update(String comment) {
-        this.comment = comment;
+    public Comment(String content) {
+        this.content = content;
+    }
+
+    public void update(String content) {
+        this.content = content;
     }
 }
