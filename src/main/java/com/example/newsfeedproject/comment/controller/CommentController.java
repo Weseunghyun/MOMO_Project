@@ -2,6 +2,8 @@ package com.example.newsfeedproject.comment.controller;
 
 import com.example.newsfeedproject.comment.dto.CommentRequestDto;
 import com.example.newsfeedproject.comment.dto.CommentResponseDto;
+import com.example.newsfeedproject.comment.dto.UpdateCommentRequestDto;
+import com.example.newsfeedproject.comment.dto.UpdateCommentResponseDto;
 import com.example.newsfeedproject.comment.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -45,5 +47,21 @@ public class CommentController {
         List<CommentResponseDto> comments = commentService.getComments(postId);
 
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<UpdateCommentResponseDto> updateComment(
+        @PathVariable Long commentId,
+        @RequestBody UpdateCommentRequestDto requestDto,
+        HttpServletRequest request
+    ){
+        UpdateCommentResponseDto responseDto = commentService.updateComment(
+            commentId,
+            requestDto.getContent(),
+            requestDto.getPassword(),
+            request
+        );
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

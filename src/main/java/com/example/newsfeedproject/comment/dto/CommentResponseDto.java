@@ -1,7 +1,6 @@
 package com.example.newsfeedproject.comment.dto;
 
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter
