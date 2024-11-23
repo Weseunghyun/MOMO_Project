@@ -9,7 +9,10 @@ import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
 import org.hibernate.query.results.complete.CompleteFetchBuilderEntityValuedModelPart;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +49,22 @@ public class CommentService {
                 savedComment.getContent(),
                 savedComment.getCreatedAt()
         );
+    }
+
+    public List<CommentResponseDto> getComments(Long postId) {
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            commentResponseDtos.add(new CommentResponseDto(
+                comment.getId(),
+                comment.getUser().getName(),
+                comment.getContent(),
+                comment.getCreatedAt()
+            ));
+        }
+
+        return commentResponseDtos;
     }
 }

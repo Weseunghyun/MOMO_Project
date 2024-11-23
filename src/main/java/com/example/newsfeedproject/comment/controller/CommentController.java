@@ -4,6 +4,7 @@ import com.example.newsfeedproject.comment.dto.CommentRequestDto;
 import com.example.newsfeedproject.comment.dto.CommentResponseDto;
 import com.example.newsfeedproject.comment.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,14 @@ public class CommentController {
                 requestDto.getContent()
         );
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<CommentResponseDto>> getComments(
+        @PathVariable Long postId
+    ){
+        List<CommentResponseDto> comments = commentService.getComments(postId);
+
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 }
