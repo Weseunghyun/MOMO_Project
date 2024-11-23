@@ -1,8 +1,10 @@
 package com.example.newsfeedproject.comment.service;
 
 import com.example.newsfeedproject.comment.dto.CommentResponseDto;
+import com.example.newsfeedproject.comment.dto.UpdateCommentResponseDto;
 import com.example.newsfeedproject.comment.entity.Comment;
 import com.example.newsfeedproject.comment.repository.CommentRepository;
+import com.example.newsfeedproject.common.config.PasswordEncoder;
 import com.example.newsfeedproject.post.entity.Post;
 import com.example.newsfeedproject.post.repository.PostRepository;
 import com.example.newsfeedproject.user.entity.User;
@@ -11,10 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Page;
-import org.hibernate.query.results.complete.CompleteFetchBuilderEntityValuedModelPart;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +26,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 댓글 작성
      */
-    public CommentResponseDto createComment(HttpServletRequest request, Long postId, String content) {
+    public CommentResponseDto createComment(HttpServletRequest request, Long postId,
+        String content) {
         HttpSession session = request.getSession(false);
 
         // 세션을 통해 로그인한 사용자의 id 가져옴
@@ -44,10 +49,10 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return new CommentResponseDto(
-                savedComment.getId(),
-                findUser.getName(),
-                savedComment.getContent(),
-                savedComment.getCreatedAt()
+            savedComment.getId(),
+            findUser.getName(),
+            savedComment.getContent(),
+            savedComment.getCreatedAt()
         );
     }
 
@@ -66,5 +71,36 @@ public class CommentService {
         }
 
         return commentResponseDtos;
+    }
+
+    public UpdateCommentResponseDto updateComment(
+        Long commentId,
+        String content,
+        String password,
+        HttpServletRequest request
+    ) {
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("userId");
+
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+
+        if (!userId.equals(findComment.getUser().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "자신이 작성한 댓글만 수정할 수 있습니다.");
+        }
+
+        if (!passwordEncoder.matches(password, findComment.getUser().getPassword())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비밀번호가 일치하지 않습니다");
+        }
+
+        findComment.update(content);
+
+        Comment updateComment = commentRepository.save(findComment);
+
+        return new UpdateCommentResponseDto(
+            updateComment.getId(),
+            updateComment.getUser().getName(),
+            updateComment.getContent(),
+            updateComment.getModifiedAt()
+        );
     }
 }
