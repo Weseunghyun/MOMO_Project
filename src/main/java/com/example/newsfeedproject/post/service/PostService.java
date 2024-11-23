@@ -55,7 +55,7 @@ public class PostService {
         //작성일 기준 내림차순 정렬
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         //pageable 객체를 통해 리포지토리에서 Post를 Page 객체로 조회해 가져온다.
-        Page<Post> postPage = postRepository.findAll(pageable);
+        Page<Post> postPage = postRepository.findAllByUserIsDeletedIsFalse(pageable);
 
         //반환된 page 객체 내부의 Post 객체를 Dto로 반환하는 과정, 작성자의 이름을 포함한다.
         Page<PostWithNameResponseDto> posts = postPage.map(post -> new PostWithNameResponseDto(
