@@ -11,6 +11,7 @@ public class PostUpdateResponseDto {
     private final String content;
     private final LocalDateTime updatedAt;
 
+
     public PostUpdateResponseDto(Long postId, String title, String content,
         LocalDateTime updatedAt) {
         this.postId = postId;

@@ -2,6 +2,7 @@ package com.example.newsfeedproject.user.entity;
 
 import com.example.newsfeedproject.common.entity.TimeBaseEntity;
 import com.example.newsfeedproject.friend.entity.Friend;
+import com.example.newsfeedproject.like.entity.Like;
 import com.example.newsfeedproject.post.entity.Post;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -48,6 +49,9 @@ public class User extends TimeBaseEntity {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friend> receivedFriendRequests = new ArrayList<>(); // 내가 받은 친구 요청
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     public User() {
     }

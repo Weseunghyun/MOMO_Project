@@ -4,6 +4,7 @@ import com.example.newsfeedproject.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,4 +21,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                     "Post not found")
             );
     }
+
+    @Query("SELECT p FROM Post p LEFT JOIN p.likes l GROUP BY p ORDER BY COUNT(l) DESC")
+    Page<Post> findAllPostsOrderByLikes(Pageable pageable);
 }

@@ -56,6 +56,17 @@ public class PostController {
 
         return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
+    //좋아요 순 정렬 페이징 처리된 게시글 목록을 반환하는 엔드포인트. 디폴트 값 page=1, size=10
+    @GetMapping("/likesort")
+    public ResponseEntity<PostPageResponseDto> getPostsPaginatedLikesort(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+
+        PostPageResponseDto pageResponseDto = postService.getPostsPaginatedLikeSort(page - 1, size);
+
+        return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
+    }
 
     //게시글 수정 엔드포인트
     @PatchMapping("/{postId}")

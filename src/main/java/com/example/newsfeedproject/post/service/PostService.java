@@ -64,7 +64,8 @@ public class PostService {
             post.getTitle(),
             post.getContent(),
             post.getCreatedAt(),
-            post.getModifiedAt()
+            post.getModifiedAt(),
+                (long)post.getLikes().size()
         ));
 
         //페이지 정보 객체를 생성
@@ -74,7 +75,35 @@ public class PostService {
             (int) posts.getTotalElements(),
             posts.getTotalPages()
         );
+        //페이지 정보와 PostWithNameResponseDto 를 List형태로 담아서 반환
+        return new PostPageResponseDto(posts.getContent(), pageInfo);
+    }
 
+    //게시글 페이징 처리 로직 및 좋아요순
+    public PostPageResponseDto getPostsPaginatedLikeSort(int page, int size) {
+        //작성일 기준 내림차순 정렬
+        Pageable pageable = PageRequest.of(page, size);
+        //pageable 객체를 통해 리포지토리에서 Post를 Page 객체로 조회해 가져온다.
+        Page<Post> postPage = postRepository.findAllPostsOrderByLikes(pageable);
+
+        //반환된 page 객체 내부의 Post 객체를 Dto로 반환하는 과정, 작성자의 이름을 포함한다.
+        Page<PostWithNameResponseDto> posts = postPage.map(post -> new PostWithNameResponseDto(
+                post.getId(),
+                post.getUser().getName(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getModifiedAt(),
+                (long)post.getLikes().size()
+        ));
+
+        //페이지 정보 객체를 생성
+        PageInfo pageInfo = new PageInfo(
+                posts.getNumber() + 1,
+                posts.getSize(),
+                (int) posts.getTotalElements(),
+                posts.getTotalPages()
+        );
         //페이지 정보와 PostWithNameResponseDto 를 List형태로 담아서 반환
         return new PostPageResponseDto(posts.getContent(), pageInfo);
     }

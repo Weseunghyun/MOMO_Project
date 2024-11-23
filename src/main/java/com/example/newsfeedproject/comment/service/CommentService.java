@@ -52,7 +52,8 @@ public class CommentService {
             savedComment.getId(),
             findUser.getName(),
             savedComment.getContent(),
-            savedComment.getCreatedAt()
+            savedComment.getCreatedAt(),
+                0L
         );
     }
 
@@ -66,7 +67,9 @@ public class CommentService {
                 comment.getId(),
                 comment.getUser().getName(),
                 comment.getContent(),
-                comment.getCreatedAt()
+                comment.getCreatedAt(),
+                    (long)comment.getLikes().size()
+
             ));
         }
 
