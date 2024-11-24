@@ -29,7 +29,7 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    // 친구 요청을 하는 엔드포인트
+
     @PostMapping("/posts/{postId}")
     public ResponseEntity<AddPostLikeResponseDto> addPostLike(
             @PathVariable("postId") Long postId,
